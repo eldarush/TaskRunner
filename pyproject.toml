@@ -1,9 +1,9 @@
 [project]
 name = "taskrunner"
-version = "0.1.0"
+version = "0.69.420"
 description = "Plugin-based task runner"
-authors = [{name = "You", email = "you@example.com"}]
-license = {text = "MIT"}
+authors = [{name = "ELdar Aslanbeily", email = "eldar.aslanbeily@gmail.com"}]
+license = {text = "Nah"}
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-taskrunner = "taskrunner.cli:cli"
+taskrunner = "taskrunner.__main__:cli"
 
 [project.urls]
 Homepage = "https://github.com/eldar/TaskRunner"

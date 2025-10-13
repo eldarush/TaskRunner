@@ -1,13 +1,22 @@
 import os
 import re
 from typing import Dict
+from enum import Enum
+
+
+class EnvSubstitutionPatterns(Enum):
+    ENV_VAR_PATTERN = r'\$\{([^}]+)\}'
+
+
+class EnvSubstitutionMessages(Enum):
+    ENV_VAR_NOT_FOUND = "Environment variable '{}' not found"
 
 
 def substitute_env_vars(config: Dict) -> Dict:
     def substitute_value(value):
         if isinstance(value, str):
             # Find all ${VAR_NAME} patterns and substitute them
-            pattern = r'\$\{([^}]+)\}'
+            pattern = EnvSubstitutionPatterns.ENV_VAR_PATTERN.value
 
             def replacer(match):
                 var_name = match.group(1)
