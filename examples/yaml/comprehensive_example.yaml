@@ -1,0 +1,53 @@
+# Comprehensive example demonstrating all TaskRunner features
+# This example shows:
+# 1. All built-in task types
+# 2. Environment variable substitution
+# 3. Complex nested configurations
+
+- name: welcome_message
+  type: log
+  config:
+    message: "Welcome to TaskRunner comprehensive demo!"
+
+- name: short_pause
+  type: wait
+  config:
+    seconds: 1
+
+- name: check_api
+  type: http_get
+  config:
+    url: "https://httpbin.org/status/200"
+
+- name: create_readme
+  type: file
+  config:
+    action: "create"
+    path: "comprehensive_demo.md"
+    content: |
+      # Comprehensive Demo
+      
+      This file was created by TaskRunner!
+      
+      Environment: ${DEMO_ENV}
+
+- name: cleanup_readme
+  type: file
+  config:
+    action: "delete"
+    path: "comprehensive_demo.md"
+
+- name: complex_task
+  type: log
+  config:
+    message: "Complex task execution"
+    details:
+      environment: "${DEMO_ENV}"
+      version: "1.0.0"
+      features:
+        - "plugin_architecture"
+        - "config_validation"
+        - "env_substitution"
+      metadata:
+        created_by: "TaskRunner"
+        timestamp: "${TIMESTAMP}"

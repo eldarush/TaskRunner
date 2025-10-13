@@ -1,0 +1,28 @@
+[project]
+name = "taskrunner"
+version = "0.1.0"
+description = "Plugin-based task runner"
+authors = [{name = "You", email = "you@example.com"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1",
+    "pydantic>=1.10,<2.0",
+    "PyYAML>=6.0",
+    "requests>=2.31",
+]
+
+[project.scripts]
+taskrunner = "taskrunner.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/eldar/TaskRunner"
+Repository = "https://github.com/eldar/TaskRunner"
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["taskrunner*"]
