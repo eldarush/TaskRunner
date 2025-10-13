@@ -1,6 +1,3 @@
-# Example demonstrating the LogTask plugin
-# This task simply prints a message to the console
-
 - name: log_example
   type: log
   config:

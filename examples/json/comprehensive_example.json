@@ -30,6 +30,13 @@
     }
   },
   {
+    "name": "wait_2_seconds",
+    "type": "wait",
+    "config": {
+      "seconds": 2
+    }
+  },
+  {
     "name": "cleanup_readme",
     "type": "file",
     "config": {

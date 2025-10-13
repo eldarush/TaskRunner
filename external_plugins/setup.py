@@ -8,7 +8,5 @@ setup(
     install_requires=[
         "taskrunner",
     ],
-    entry_points={
-        # This is just an example - in a real scenario, you might have entry points
-    },
+    entry_points={},
 )

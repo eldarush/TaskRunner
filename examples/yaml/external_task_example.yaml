@@ -1,6 +1,3 @@
-# Example demonstrating an external plugin
-# This task uses a plugin discovered from an installed package
-
 - name: external_example
   type: external
   config:

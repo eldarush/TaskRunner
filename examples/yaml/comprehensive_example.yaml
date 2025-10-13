@@ -1,9 +1,3 @@
-# Comprehensive example demonstrating all TaskRunner features
-# This example shows:
-# 1. All built-in task types
-# 2. Environment variable substitution
-# 3. Complex nested configurations
-
 - name: welcome_message
   type: log
   config:
@@ -30,6 +24,11 @@
       This file was created by TaskRunner!
       
       Environment: ${DEMO_ENV}
+
+- name: wait_2_seconds
+  type: wait
+  config:
+    seconds: 2
 
 - name: cleanup_readme
   type: file

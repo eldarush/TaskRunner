@@ -1,6 +1,3 @@
-# Example demonstrating the HttpGetTask plugin
-# This task makes an HTTP GET request to a URL and prints the status code
-
 - name: http_get_example
   type: http_get
   config:

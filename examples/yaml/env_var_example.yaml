@@ -1,6 +1,3 @@
-# Example demonstrating environment variable substitution
-# This task shows how to use environment variables in task configurations
-
 - name: env_var_example
   type: log
   config:
