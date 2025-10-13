@@ -1,0 +1,4 @@
+- name: env_var_example
+  type: log
+  config:
+    message: "Environment variable EXAMPLE_VAR is: ${EXAMPLE_VAR}"

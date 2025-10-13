@@ -1,85 +1,100 @@
-﻿# 🧩 TaskRunner – Plugin-Based Task Runner in Python
+# 🧩 TaskRunner – Plugin-Based Task Runner
 
-TaskRunner is a lightweight, extensible command-line tool that executes tasks defined in JSON or YAML files.
-It’s built around a plugin architecture — drop in new task types without touching the core code.
+A lightweight, extensible command-line tool that executes tasks defined in JSON or YAML files.
 
----
-
-## 🚀 Features
-
-* **Plugin architecture** – Add new task types by subclassing `BaseTaskRunner`.
-* **Strict validation** – Uses Pydantic to ensure tasks are well-formed.
-* **Dynamic discovery** – Automatically finds plugins from the `plugins/` folder.
-* **CLI interface** – Powered by Click with commands for running, validating, and listing tasks.
-* **Built-in plugins**:
-
-  * `LogTask` – Prints a message
-  * `WaitTask` – Delays execution
-  * `HttpGetTask` – Sends a GET request and prints the status code
-
----
-
-## 🧱 Example Task File
-
-```yaml
-- name: greet
-  type: log
-  config:
-    message: "Hello, world!"
-
-- name: pause
-  type: wait
-  config:
-    seconds: 2
-
-- name: check_site
-  type: http_get
-  config:
-    url: "https://example.com"
-```
-
----
-
-## 🕹️ Usage
+## 🚀 Quick Start
 
 ```bash
-# Validate a task file
-taskrunner validate tasks.yaml
+# Install TaskRunner
+pip install -e .
 
-# Run all tasks
-taskrunner run tasks.yaml
+# Run a simple example
+taskrunner run examples/yaml/log_task_example.yaml
 
-# Run only one task by name
-taskrunner run tasks.yaml --only greet
-
-# List all available plugins
+# List available plugins
 taskrunner list-plugins
 ```
 
----
+## 🧱 Task Definition
+
+Tasks are defined in JSON or YAML files as a list of task objects:
+
+```yaml
+- name: welcome_message
+  type: log
+  config:
+    message: "Welcome to TaskRunner!"
+```
+
+Each task has:
+- `name`: A unique identifier
+- `type`: The plugin type to execute
+- `config`: Configuration specific to the task type
+
+## 🕹️ CLI Commands
+
+```bash
+# Run tasks
+taskrunner run <file> [--only <task_name>] [--dry-run] [--verbose] [--parallel]
+
+# Validate task file
+taskrunner validate <file>
+
+# List available plugins
+taskrunner list-plugins
+```
+
+## 🔧 Built-in Plugins
+
+- **`log`** - Print messages to console
+- **`wait`** - Pause execution for specified time
+- **`http_get`** - Make HTTP GET requests
+- **`file`** - Create or delete files
 
 ## 🧩 Adding New Plugins
 
-Create a new file under `taskrunner/plugins/` and subclass `BaseTaskRunner`:
+Create a new file in `taskrunner/plugins/` that subclasses `BaseTaskRunner`:
 
 ```python
-from taskrunner.core import BaseTaskRunner
+from taskrunner.plugin_base import BaseTaskRunner
 
 class MyTask(BaseTaskRunner):
     type_name = "my_task"
 
     def run(self, config):
-        print("Running my custom task:", config)
+        print(f"Running my custom task with config: {config}")
 ```
 
-That’s it — your new plugin is instantly discoverable.
+The plugin is automatically discovered.
 
----
+## ⚙️ Advanced Features
 
-## ⚙️ Installation
+### Environment Variables
 
+Use `${VAR_NAME}` syntax for environment variable substitution:
+
+```yaml
+- name: env_example
+  type: log
+  config:
+    message: "Environment: ${ENV_NAME}"
+```
+
+### Parallel Execution
+
+Run tasks in parallel:
 ```bash
-pip install -e .
+taskrunner run <file> --parallel
 ```
 
-After installation, the CLI command `taskrunner` becomes available globally.
+## 📁 Project Structure
+
+```
+taskrunner/
+├── cli.py          # Command-line interface
+├── plugin_base.py  # Base plugin class
+├── plugins/        # Built-in plugins
+├── models/         # Data models
+├── tasks/          # Task execution logic
+└── utils/          # Utility functions
+```

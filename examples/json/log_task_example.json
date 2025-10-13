@@ -1,0 +1,9 @@
+[
+  {
+    "name": "log_example",
+    "type": "log",
+    "config": {
+      "message": "This is a log task example"
+    }
+  }
+]

@@ -1,0 +1,12 @@
+- name: create_file_example
+  type: file
+  config:
+    action: "create"
+    path: "example_file.txt"
+    content: "This file was created by TaskRunner!"
+
+- name: delete_file_example
+  type: file
+  config:
+    action: "delete"
+    path: "example_file.txt"

@@ -1,0 +1,9 @@
+[
+  {
+    "name": "external_example",
+    "type": "external",
+    "config": {
+      "message": "Hello from an external plugin!"
+    }
+  }
+]

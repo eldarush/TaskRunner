@@ -1,0 +1,9 @@
+[
+  {
+    "name": "wait_example",
+    "type": "wait",
+    "config": {
+      "seconds": 2
+    }
+  }
+]

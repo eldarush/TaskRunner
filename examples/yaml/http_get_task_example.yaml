@@ -1,0 +1,4 @@
+- name: http_get_example
+  type: http_get
+  config:
+    url: "https://httpbin.org/status/200"
