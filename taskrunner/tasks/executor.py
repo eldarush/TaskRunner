@@ -4,7 +4,7 @@ from typing import List, Dict, Type
 from enum import Enum
 
 from ..models.task_model import TaskModel
-from ..core import BaseTaskRunner
+from ..plugin_base import BaseTaskRunner
 from ..utils.env_substitution import substitute_env_vars
 
 # Set up logging

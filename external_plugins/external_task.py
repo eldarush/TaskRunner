@@ -1,4 +1,4 @@
-from taskrunner.core import BaseTaskRunner
+from taskrunner.plugin_base import BaseTaskRunner
 
 
 class ExternalTask(BaseTaskRunner):

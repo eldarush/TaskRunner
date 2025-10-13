@@ -1,5 +1,5 @@
 import requests
-from ..core import BaseTaskRunner
+from ..plugin_base import BaseTaskRunner
 from pydantic import BaseModel, Field, validator
 from urllib.parse import urlparse
 
@@ -8,7 +8,7 @@ class HttpGetTaskConfig(BaseModel):
     url: str = Field(..., description="The URL to make the GET request to")
 
     @validator('url')
-    def validate_url(cls, v):
+    def validate_url(self, v):
         parsed = urlparse(v)
         if not parsed.scheme or not parsed.netloc:
             raise ValueError('Invalid URL format')

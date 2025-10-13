@@ -1,4 +1,4 @@
-from ..core import BaseTaskRunner
+from ..plugin_base import BaseTaskRunner
 from pydantic import BaseModel, Field
 from typing import Optional
 import os
@@ -11,7 +11,7 @@ class FileAction(str, Enum):
 
 
 class FileTaskConfig(BaseModel):
-    action: FileAction = Field(..., description="Action to perform on the file")
+    action: FileAction = Field(..., description="Action to perform: 'create' or 'delete'")
     path: str = Field(..., description="Path to the file", min_length=1)
     content: Optional[str] = Field("", description="Content to write when creating a file")
 

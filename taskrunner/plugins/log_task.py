@@ -1,4 +1,4 @@
-from ..core import BaseTaskRunner
+from ..plugin_base import BaseTaskRunner
 from pydantic import BaseModel, Field
 
 

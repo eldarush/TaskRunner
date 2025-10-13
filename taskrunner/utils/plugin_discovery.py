@@ -6,7 +6,7 @@ import sys
 from typing import Dict, Type
 from enum import Enum
 
-from ..core import BaseTaskRunner
+from ..plugin_base import BaseTaskRunner
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ def _load_local_plugin_module(plugins, module_name):
 def _discover_external_plugins(plugins, package_prefix):
     """Discover external plugins from installed packages."""
     logger.debug(PluginDiscoveryMessages.DISCOVERING_EXTERNAL.value.format(package_prefix))
-    
+
     try:
         package = importlib.import_module(package_prefix)
         if hasattr(package, '__path__'):
@@ -130,21 +130,21 @@ def _register_plugin_classes(plugins, module, found_message, avoid_overwrite=Fal
         obj = getattr(module, attr)
         if not _is_valid_plugin_class(obj):
             continue
-            
+
         if not obj.type_name:
             logger.warning(PLUGIN_CLASS_NAME_WARNING.format(obj.__name__))
             continue
-            
+
         # Avoid overwriting local plugins with the same type_name for external plugins
         if avoid_overwrite and obj.type_name in plugins:
             continue
-            
+
         plugins[obj.type_name] = obj
         logger.debug(found_message.format(obj.type_name))
 
 
 def _is_valid_plugin_class(obj):
     """Check if an object is a valid plugin class."""
-    return (isinstance(obj, type) and 
-            issubclass(obj, BaseTaskRunner) and 
+    return (isinstance(obj, type) and
+            issubclass(obj, BaseTaskRunner) and
             obj is not BaseTaskRunner)
