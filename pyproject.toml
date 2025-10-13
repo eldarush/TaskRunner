@@ -17,8 +17,8 @@ dependencies = [
 taskrunner = "taskrunner.__main__:cli"
 
 [project.urls]
-Homepage = "https://github.com/eldar/TaskRunner"
-Repository = "https://github.com/eldar/TaskRunner"
+Homepage = "https://github.com/eldarush/TaskRunner"
+Repository = "https://github.com/eldarush/TaskRunner"
 
 [build-system]
 requires = ["setuptools>=45", "wheel"]
