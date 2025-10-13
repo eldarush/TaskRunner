@@ -11,7 +11,6 @@ class CoreMessages(Enum):
 
 
 class BaseTaskRunner:
-    """Base class for all plugins."""
     type_name: str = None  # Must be overridden
 
     def run(self, config: Dict):

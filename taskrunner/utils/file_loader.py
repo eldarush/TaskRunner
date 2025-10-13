@@ -20,7 +20,6 @@ class SupportedFormats(Enum):
 
 
 def load_tasks_from_file(file_path: str) -> List[TaskModel]:
-    """Load tasks from a JSON or YAML file."""
     if not os.path.exists(file_path):
         raise FileNotFoundError(FileLoaderMessages.FILE_NOT_FOUND.value.format(file_path))
 
