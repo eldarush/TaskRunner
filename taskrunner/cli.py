@@ -1,5 +1,6 @@
 import click
 import logging
+import re
 from enum import Enum
 
 from .utils.file_loader import load_tasks_from_file
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 # Constants
 DEFAULT_LOG_LEVEL = logging.INFO
 DEBUG_LOG_LEVEL = logging.DEBUG
-DRY_RUN_PREFIX = "[Dry Run]"
+DRY_RUN_TAG = "[DRY RUN]"
 VALIDATION_SUCCESS_PREFIX = "Successfully validated"
 
 
@@ -32,9 +33,14 @@ class TaskRunnerMessages(Enum):
     UNKNOWN_TASK_TYPES = "Unknown task types: {}"
 
 
+def format_task_tag(name):
+    # Replace special characters with spaces and convert to uppercase
+    tag = re.sub(r'[^a-zA-Z0-9]+', ' ', name).upper().strip()
+    return tag
+
+
 @click.group()
 def cli():
-    """TaskRunner - A plugin-based task runner in Python."""
     pass
 
 
@@ -46,7 +52,6 @@ def cli():
 @click.option("--parallel", is_flag=True, help="Run tasks in parallel")
 @click.option("--plugin-prefix", help="Prefix for discovering plugins from installed packages")
 def run(file, only, verbose, dry_run, parallel, plugin_prefix):
-    """Run tasks from a JSON or YAML file."""
     if verbose:
         logging.getLogger().setLevel(DEBUG_LOG_LEVEL)
         logger.debug(TaskRunnerMessages.VERBOSE_ENABLED.value)
@@ -76,9 +81,10 @@ def run(file, only, verbose, dry_run, parallel, plugin_prefix):
                 raise ValueError(TaskRunnerMessages.UNKNOWN_TASK_TYPE.value.format(task.type, task.name))
 
         if dry_run:
-            print(TaskRunnerMessages.WOULD_RUN_TASKS.value.format(DRY_RUN_PREFIX))
+            print(TaskRunnerMessages.WOULD_RUN_TASKS.value.format(DRY_RUN_TAG))
             for task in tasks:
-                print(f"  - {task.name} ({task.type})")
+                tag = format_task_tag(task.name)
+                print(f"  - [{tag}] {task.name} ({task.type})")
             return
 
         # Run tasks
@@ -96,7 +102,6 @@ def run(file, only, verbose, dry_run, parallel, plugin_prefix):
 @cli.command()
 @click.option("--plugin-prefix", help="Prefix for discovering plugins from installed packages")
 def list_plugins(plugin_prefix):
-    """List all available plugins."""
     plugins = discover_plugins(package_prefix=plugin_prefix)
     print(TaskRunnerMessages.AVAILABLE_PLUGINS.value)
     for name in plugins:
@@ -107,7 +112,6 @@ def list_plugins(plugin_prefix):
 @click.argument("file")
 @click.option("--plugin-prefix", help="Prefix for discovering plugins from installed packages")
 def validate(file, plugin_prefix):
-    """Validate the given task file."""
     try:
         plugins = discover_plugins(package_prefix=plugin_prefix)
         tasks = load_tasks_from_file(file)
@@ -129,7 +133,8 @@ def validate(file, plugin_prefix):
 
         print(f"{VALIDATION_SUCCESS_PREFIX} {len(tasks)} task(s)")
         for task in tasks:
-            print(f"  - {task.name} ({task.type})")
+            tag = format_task_tag(task.name)
+            print(f"  - [{tag}] {task.name} ({task.type})")
 
     except Exception as e:
         error_message = f"{TaskRunnerMessages.VALIDATION_FAILED.value.format(e)}"

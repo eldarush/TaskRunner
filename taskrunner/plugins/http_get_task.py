@@ -8,7 +8,7 @@ class HttpGetTaskConfig(BaseModel):
     url: str = Field(..., description="The URL to make the GET request to")
 
     @validator('url')
-    def validate_url(self, v):
+    def validate_url(cls, v):
         parsed = urlparse(v)
         if not parsed.scheme or not parsed.netloc:
             raise ValueError('Invalid URL format')

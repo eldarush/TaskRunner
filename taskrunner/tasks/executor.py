@@ -1,4 +1,5 @@
 import logging
+import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Type
 from enum import Enum
@@ -19,6 +20,11 @@ TASK_ERROR = "error"
 class ExecutionStatus(Enum):
     SUCCESS = "success"
     ERROR = "error"
+
+
+def format_task_tag(name):
+    # Replace special characters with spaces and convert to uppercase
+    return re.sub(r'[^a-zA-Z0-9]+', ' ', name).upper().strip()
 
 
 def run_tasks_sequentially(tasks: List[TaskModel], plugins: Dict[str, Type[BaseTaskRunner]], verbose: bool = False):
@@ -52,18 +58,20 @@ def run_tasks_in_parallel(tasks: List[TaskModel], plugins: Dict[str, Type[BaseTa
 
 
 def _log_task_execution(task, config, verbose):
+    tag = format_task_tag(task.name)
     if verbose:
-        print(f"[Verbose] Running {task.name} ({task.type}) with config: {config}")
+        print(f"[{tag}] [VERBOSE] Running {task.name} ({task.type}) with config: {config}")
     else:
-        print(f"Running task: {task.name}")
+        print(f"[{tag}] Running task: {task.name}")
 
 
 def _execute_single_task(runner, task, config):
+    tag = format_task_tag(task.name)
     try:
         runner.run(config)
-        print(f"Task '{task.name}' completed successfully")
+        print(f"[{tag}] Task '{task.name}' completed successfully")
     except Exception as e:
-        print(f"Task '{task.name}' failed: {e}")
+        print(f"[{tag}] Task '{task.name}' failed: {e}")
         raise
 
 
@@ -79,8 +87,9 @@ def _submit_tasks_for_parallel_execution(tasks, plugins, verbose):
             # Substitute environment variables in config
             config = substitute_env_vars(task.config)
 
+            tag = format_task_tag(task.name)
             if verbose:
-                print(f"[Verbose] Submitting {task.name} ({task.type}) for parallel execution")
+                print(f"[{tag}] [VERBOSE] Submitting {task.name} ({task.type}) for parallel execution")
 
             # Submit task to executor
             future = executor.submit(_run_single_task, task, runner, config, verbose)
@@ -95,26 +104,29 @@ def _process_completed_tasks(futures):
             result = future.result()
             _handle_task_result(result, task_name)
         except Exception as e:
-            print(f"Task '{task_name}' failed with exception: {e}")
+            tag = format_task_tag(task_name)
+            print(f"[{tag}] Task '{task_name}' failed with exception: {e}")
 
 
 def _handle_task_result(result, task_name):
+    tag = format_task_tag(task_name)
     if result is not None:
         status, message = result
         if status == TASK_SUCCESS:
-            print(f"Task '{task_name}' completed successfully")
+            print(f"[{tag}] Task '{task_name}' completed successfully")
         else:
-            print(f"Task '{task_name}' failed: {message}")
+            print(f"[{tag}] Task '{task_name}' failed: {message}")
     else:
-        print(f"Task '{task_name}' completed")
+        print(f"[{tag}] Task '{task_name}' completed")
 
 
 def _run_single_task(task: TaskModel, runner: BaseTaskRunner, config: Dict, verbose: bool):
+    tag = format_task_tag(task.name)
     try:
         if verbose:
-            print(f"[Verbose] Running {task.name} ({task.type}) with config: {config}")
+            print(f"[{tag}] [VERBOSE] Running {task.name} ({task.type}) with config: {config}")
         else:
-            print(f"Running task: {task.name}")
+            print(f"[{tag}] Running task: {task.name}")
 
         runner.run(config)
         return TASK_SUCCESS, None
