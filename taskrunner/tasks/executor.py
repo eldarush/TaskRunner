@@ -3,6 +3,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Type
 from enum import Enum
+import os
 
 from ..models.task_model import TaskModel
 from ..plugin_base import BaseTaskRunner
@@ -12,7 +13,6 @@ from ..utils.env_substitution import substitute_env_vars
 logger = logging.getLogger(__name__)
 
 # Constants
-MAX_PARALLEL_WORKERS = 10
 TASK_SUCCESS = "success"
 TASK_ERROR = "error"
 
@@ -20,6 +20,23 @@ TASK_ERROR = "error"
 class ExecutionStatus(Enum):
     SUCCESS = "success"
     ERROR = "error"
+
+
+def _get_cpu_count():
+    try:
+        # Try to get the number of CPUs available to the current process
+        if hasattr(os, 'sched_getaffinity'):
+            count = len(os.sched_getaffinity(0))
+            if count > 0:
+                return count
+        # Fallback to the total number of CPUs
+        count = os.cpu_count()
+        if count is not None and count > 0:
+            return count
+    except Exception:
+        pass
+    # If all else fails, default to 4 workers
+    return 4
 
 
 def format_task_tag(name):
@@ -77,7 +94,9 @@ def _execute_single_task(runner, task, config):
 
 def _submit_tasks_for_parallel_execution(tasks, plugins, verbose):
     futures = []
-    worker_count = min(MAX_PARALLEL_WORKERS, len(tasks))
+    # Use dynamic CPU count instead of hardcoded MAX_PARALLEL_WORKERS
+    cpu_count = _get_cpu_count()
+    worker_count = min(cpu_count, len(tasks))
 
     with ThreadPoolExecutor(max_workers=worker_count) as executor:
         for task in tasks:
